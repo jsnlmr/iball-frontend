@@ -3,6 +3,7 @@ import ReactMapBoxGL, { Layer, Feature, Popup } from 'react-mapbox-gl'
 import './App.css'
 import Navbar from './Navbar'
 import CourtDetail from './CourtDetail'
+import { Menu, Sidebar, Segment } from 'semantic-ui-react'
 
 const Map = ReactMapBoxGL({
   accessToken: process.env.REACT_APP_MAPBOX_PUBLIC_ACCESS_TOKEN,
@@ -19,7 +20,7 @@ class App extends Component {
       favorites: [],
       courts: [],
       selected: null,
-      current_user: null
+      current_user: true
     }
   }
 
@@ -29,7 +30,12 @@ class App extends Component {
   }
 
   handleMouseEnter = () => {
+    Map.style = {cursor: 'pointer'}
+  }
 
+  closePopup = () => {
+    console.log('close popup');
+    this.setState({selected: null})
   }
 
   render() {
@@ -56,14 +62,16 @@ class App extends Component {
             <Feature
             coordinates={[-76.9954049, 38.8953954]}
             onClick={this.handleClick}
-            onMouseEnter={this.handleMouseEnter}
+
             />
           </Layer>
           {
             this.state.selected ?
-              <Popup coordinates={[-76.9954049, 38.8953954]}>
-                <CourtDetail />
-              </Popup>
+              <Sidebar.Pushable id='sidebar' animation='push' direction='left'
+                visible vertical >
+                <CourtDetail close={this.closePopup}
+                  current={this.state.current_user} />
+              </Sidebar.Pushable>
             :
               null
           }
@@ -77,3 +85,7 @@ export default App;
 
 // layout={{ "icon-image": "marker-15" }}
 //          id="courts"
+
+// <Popup coordinates={[-76.9954049, 38.8953954]} >
+//   <CourtDetail close={this.closePopup} current={this.state.current_user} />
+// </Popup>

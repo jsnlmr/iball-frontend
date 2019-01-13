@@ -30,3 +30,35 @@
     transform: rotate(360deg);
   }
 }
+
+#sidebar {
+  background-color: white;
+}
+
+/* NAVBAR
+
+#navbar {
+  top: 0;
+  left: 0;
+  position: fixed;
+  height: 5vh;
+  width: 100vw;
+  z-index: 1;
+  background-color: white;
+}
+
+#logo {
+  margin-right: 150px;
+  margin-left: 50px;
+}
+
+.nav-link {
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+#logout {
+  margin-right: 50px;
+  float: right;
+}
+*/

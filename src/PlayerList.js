@@ -13,7 +13,7 @@ class PlayerList extends Component {
       {
         players.length > 0 ? (
           <ol>
-            {players.map(p => <li>{p}</li>)}
+            {players.map(p => <li key={p}>{p}</li>)}
           </ol>
         ) : 'No Active Players'
 

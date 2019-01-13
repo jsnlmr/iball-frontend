@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Menu, Item, Button, Dropdown, Input } from 'semantic-ui-react'
 
 class Navbar extends Component {
   constructor(props) {
@@ -7,25 +8,55 @@ class Navbar extends Component {
 
   dipsplayNav = () => {
     return ( this.props.current ? (
-      <div>
-        <span>iBall</span>
-        <span>FRIENDS</span>
-        <span>FAVORITES</span>
-        <span>PROFILE</span>
-        <span>LOGOUT</span>
-      </div>
+      <Menu size='large'>
+        <Menu.Item icon>iBall</Menu.Item>
+
+        <Dropdown item text='Friends'>
+          <Dropdown.Menu>
+            <Dropdown.Item>Friend 1</Dropdown.Item>
+            <Dropdown.Item>Friend 2</Dropdown.Item>
+            <Dropdown.Item>Friend 3</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+
+        <Dropdown item text='Favorites'>
+          <Dropdown.Menu>
+            <Dropdown.Item>Favorite 1</Dropdown.Item>
+            <Dropdown.Item>Favorite 2</Dropdown.Item>
+            <Dropdown.Item>Favorite 3</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+
+        <Menu.Item name='profile' />
+
+        <Menu.Menu position='right'>
+          <Menu.Item>
+            <Input className='icon' icon='search'
+              placeholder='Find a Basketball Court' />
+          </Menu.Item>
+
+          <Menu.Item>
+            <Button primary>LOGOUT</Button>
+          </Menu.Item>
+        </Menu.Menu>
+     </Menu>
     ) : (
-      <div>
-        <span>iBall</span>
-        <span>
-          <label>Username</label>
-          <input />
-        </span>
-        <span>
-          <label>Password</label>
-          <input />
-        </span>
-      </div>
+      <Menu size='large'>
+        <Menu.Item icon>iBall</Menu.Item>
+
+        <Menu.Menu position='right'>
+          <Menu.Item>
+            <Input className='icon' icon='user'
+              placeholder='Username' />
+            <Input className='icon' icon='password'
+              placeholder='Password' />
+          </Menu.Item>
+
+          <Menu.Item>
+            <Button primary>LOGIN</Button>
+          </Menu.Item>
+        </Menu.Menu>
+      </Menu>
       )
     )
   }
@@ -36,3 +67,15 @@ class Navbar extends Component {
 }
 
 export default Navbar
+
+// <div>
+//   <span id='logo'>iBall</span>
+//   <span>
+//     <label>Username</label>
+//     <input />
+//   </span>
+//   <span>
+//     <label>Password</label>
+//     <input />
+//   </span>
+// </div>
