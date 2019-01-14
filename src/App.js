@@ -9,6 +9,8 @@ const Map = ReactMapBoxGL({
   accessToken: process.env.REACT_APP_MAPBOX_PUBLIC_ACCESS_TOKEN,
 })
 
+const API = 'http://localhost:3001/api/v1/'
+
 
 class App extends Component {
   constructor() {
@@ -20,12 +22,13 @@ class App extends Component {
       favorites: [],
       courts: [],
       selected: null,
-      current_user: true
+      current_user: true,
+      gps: null
     }
   }
 
   handleClick = (e) => {
-    console.log(e.lngLat);
+    console.log(e);
     this.setState({selected: true})
   }
 
@@ -36,6 +39,24 @@ class App extends Component {
   closePopup = () => {
     console.log('close popup');
     this.setState({selected: null})
+  }
+
+  mapCourts = () => this.state.courts.map(court => {
+    return (
+      <Feature key={court.id} properties={court} coordinates={[court.lng, court.lat]}
+        onClick={this.handleClick} />
+    )
+  })
+
+  componentDidMount() {
+    navigator.geolocation.getCurrentPosition(position => {
+      this.setState({
+        gps: [position.coords.longitude, position.coords.latitude]
+      })
+    })
+    fetch(`${API}courts`).then(res => res.json()).then(courts => {
+      this.setState({courts: courts})
+    })
   }
 
   render() {
@@ -59,11 +80,7 @@ class App extends Component {
               'circle-color': 'red',
               'circle-stroke-width': 1,
             }}>
-            <Feature
-            coordinates={[-76.9954049, 38.8953954]}
-            onClick={this.handleClick}
-
-            />
+            { this.mapCourts() }
           </Layer>
           {
             this.state.selected ?

@@ -13,17 +13,19 @@ class Navbar extends Component {
 
         <Dropdown item text='Friends'>
           <Dropdown.Menu>
-            <Dropdown.Item>Friend 1</Dropdown.Item>
-            <Dropdown.Item>Friend 2</Dropdown.Item>
-            <Dropdown.Item>Friend 3</Dropdown.Item>
+            <Dropdown.Item text='Friend 1' description='Online' />
+            <Dropdown.Item text='Friend 2' description='Online' />
+            <Dropdown.Divider />
+            <Dropdown.Item text='Friend 3' description='Offline' />
           </Dropdown.Menu>
         </Dropdown>
 
         <Dropdown item text='Favorites'>
           <Dropdown.Menu>
-            <Dropdown.Item>Favorite 1</Dropdown.Item>
-            <Dropdown.Item>Favorite 2</Dropdown.Item>
-            <Dropdown.Item>Favorite 3</Dropdown.Item>
+            <Dropdown.Item text='Favorite 1' description='9 Active' />
+            <Dropdown.Item text='Favorite 2' description='5 Active' />
+            <Dropdown.Divider />
+            <Dropdown.Item text='Favorite 3' description='Inactive' />
           </Dropdown.Menu>
         </Dropdown>
 
