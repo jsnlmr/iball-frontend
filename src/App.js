@@ -9,7 +9,7 @@ const Map = ReactMapBoxGL({
   accessToken: process.env.REACT_APP_MAPBOX_PUBLIC_ACCESS_TOKEN,
 })
 
-const API = 'http://localhost:3001/api/v1/'
+const API = 'http://localhost:3001/api/v1'
 
 
 class App extends Component {
@@ -22,14 +22,13 @@ class App extends Component {
       favorites: [],
       courts: [],
       selected: null,
-      current_user: true,
+      current_user: null,
       gps: null
     }
   }
 
   handleClick = (e) => {
-    console.log(e);
-    this.setState({selected: true})
+    this.setState({selected: e.feature.properties})
   }
 
   handleMouseEnter = () => {
@@ -48,14 +47,32 @@ class App extends Component {
     )
   })
 
+  loginUser = e => {
+    e.preventDefault()
+    e.persist()
+    let username = e.target[0].value
+    this.setState({
+      current_user: this.state.players.find(p => {
+        return p.username === username
+      })
+    })
+
+    e.target.reset()
+  }
+
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(position => {
       this.setState({
         gps: [position.coords.longitude, position.coords.latitude]
       })
     })
-    fetch(`${API}courts`).then(res => res.json()).then(courts => {
+
+    fetch(`${API}/courts`).then(res => res.json()).then(courts => {
       this.setState({courts: courts})
+    })
+
+    fetch(`${API}/players`).then(res => res.json()).then(players => {
+      this.setState({players: players})
     })
   }
 
@@ -64,7 +81,7 @@ class App extends Component {
 
     return (
       <div>
-        <Navbar current={this.state.current_user} />
+        <Navbar current={this.state.current_user} login={this.loginUser} />
         <Map
           style='mapbox://styles/mapbox/light-v9'
           containerStyle={{
@@ -87,7 +104,8 @@ class App extends Component {
               <Sidebar.Pushable id='sidebar' animation='push' direction='left'
                 visible vertical >
                 <CourtDetail close={this.closePopup}
-                  current={this.state.current_user} />
+                  current={this.state.current_user}
+                  details={this.state.selected} />
               </Sidebar.Pushable>
             :
               null
@@ -99,10 +117,3 @@ class App extends Component {
 }
 
 export default App;
-
-// layout={{ "icon-image": "marker-15" }}
-//          id="courts"
-
-// <Popup coordinates={[-76.9954049, 38.8953954]} >
-//   <CourtDetail close={this.closePopup} current={this.state.current_user} />
-// </Popup>

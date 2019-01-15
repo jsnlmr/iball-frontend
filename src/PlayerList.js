@@ -2,20 +2,25 @@ import React, { Component } from 'react'
 
 class PlayerList extends Component {
 
+  constructor(props){
+    super(props)
+  }
+
   renderActivePlayers = () => {
-    return ['Jay']
+    return []//this.props.players.map(p => <li key={p}>{p}</li>)
   }
 
   render() {
-    const players = this.renderActivePlayers()
+    let players = this.renderActivePlayers()
     return (
       <div>
       {
         players.length > 0 ? (
           <ol>
-            {players.map(p => <li key={p}>{p}</li>)}
+            <h4>Active Players</h4>
+            { players }
           </ol>
-        ) : 'No Active Players'
+        ) : <h4>No Active Players</h4>
 
       }
       </div>

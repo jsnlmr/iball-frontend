@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Menu, Item, Button, Dropdown, Input } from 'semantic-ui-react'
+import { Menu, Item, Button, Dropdown, Input, Form } from 'semantic-ui-react'
 
 class Navbar extends Component {
   constructor(props) {
@@ -48,15 +48,17 @@ class Navbar extends Component {
 
         <Menu.Menu position='right'>
           <Menu.Item>
-            <Input className='icon' icon='user'
-              placeholder='Username' />
-            <Input className='icon' icon='password'
-              placeholder='Password' />
+            <Form onSubmit={this.props.login}>
+              <Input className='icon' icon='user' iconPosition='left'
+                placeholder='Username' />
+              <Input className='icon' icon='lock' iconPosition='left'
+                placeholder='Password' />
+                <Menu.Item>
+                  <Button type='submit' primary>LOGIN</Button>
+                </Menu.Item>
+            </Form>
           </Menu.Item>
 
-          <Menu.Item>
-            <Button primary>LOGIN</Button>
-          </Menu.Item>
         </Menu.Menu>
       </Menu>
       )
