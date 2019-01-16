@@ -8,7 +8,7 @@ class Navbar extends Component {
 
   dipsplayNav = () => {
     return ( this.props.current ? (
-      <Menu size='large'>
+      <Menu fixed='top' size='large'>
         <Menu.Item icon>iBall</Menu.Item>
 
         <Dropdown item text='Friends'>

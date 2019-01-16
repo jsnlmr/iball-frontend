@@ -28,6 +28,7 @@ class App extends Component {
   }
 
   handleClick = (e) => {
+    if(this.state.selected) {this.closePopup()}
     this.setState({selected: e.feature.properties})
   }
 
@@ -60,6 +61,7 @@ class App extends Component {
   }
 
   logoutUser = () => {
+    this.closePopup()
     this.setState({current_user: null})
   }
 
@@ -90,6 +92,7 @@ class App extends Component {
         <div id='nav'>
           <Navbar current={this.state.current_user} login={this.loginUser} logout={this.logoutUser}/>
         </div>
+
         <div id='map'>
           <Map
             ref={e => {this.map = e}}
@@ -111,18 +114,21 @@ class App extends Component {
 
               { this.mapCourts() }
             </Layer>
-            {
-              this.state.selected ?
-                <Sidebar.Pushable id='sidebar' animation='push' direction='left'
-                  visible vertical >
-                  <CourtDetail close={this.closePopup}
-                    current={this.state.current_user}
-                    details={this.state.selected} />
-                </Sidebar.Pushable>
-              :
-                null
-            }
+
           </Map>
+          <div>
+          {
+            this.state.selected ?
+              <Sidebar id='sidebar' animation='push' direction='left'
+                visible vertical >
+                <CourtDetail close={this.closePopup}
+                  current={this.state.current_user}
+                  details={this.state.selected} />
+              </Sidebar>
+            :
+              null
+          }
+          </div>
         </div>
       </div>
     );
