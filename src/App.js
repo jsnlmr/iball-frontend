@@ -27,25 +27,28 @@ class App extends Component {
     }
   }
 
-  handleClick = (e) => {
-    if(this.state.selected) {this.closePopup()}
+  //////////// COURT POPUP ////////////
+
+  showCourt = (e) => {
+    if(this.state.selected) {this.closeCourt()}
     this.setState({selected: e.feature.properties})
   }
 
-  handleMouseEnter = () => {
-    this.map.style = {cursor: 'pointer'}
-  }
-
-  closePopup = () => {
+  closeCourt = () => {
     this.setState({selected: null})
   }
+
+
+  /////////// COURT MAPPING ////////////
 
   mapCourts = () => this.state.courts.map(court => {
     return (
       <Feature key={court.id} properties={court} coordinates={[court.lng, court.lat]}
-        onClick={this.handleClick} />
+        onClick={this.showCourt} />
     )
   })
+
+  ////////////// LOGIN/LOGOUT ////////////////
 
   loginUser = e => {
     e.preventDefault()
@@ -61,9 +64,11 @@ class App extends Component {
   }
 
   logoutUser = () => {
-    this.closePopup()
+    this.closeCourt()
     this.setState({current_user: null})
   }
+
+  /////////// LIFECYCLE //////////////
 
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(position => {
@@ -80,10 +85,6 @@ class App extends Component {
       this.setState({players: players})
     })
 
-  }
-
-  onMapLoad = map => {
-      console.log(map);
   }
 
   render() {
@@ -121,7 +122,7 @@ class App extends Component {
             this.state.selected ?
               <Sidebar id='sidebar' animation='push' direction='left'
                 visible vertical >
-                <CourtDetail close={this.closePopup}
+                <CourtDetail close={this.closeCourt}
                   current={this.state.current_user}
                   details={this.state.selected} />
               </Sidebar>
@@ -136,3 +137,12 @@ class App extends Component {
 }
 
 export default App;
+
+
+// handleMouseEnter = () => {
+//   this.map.style = {cursor: 'pointer'}
+// }
+
+// onMapLoad = map => {
+//     console.log(map);
+// }

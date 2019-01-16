@@ -15,6 +15,9 @@ class CourtDetail extends Component {
     }
   }
 
+
+  /////////////// PLAYER ACTIVITY ////////////////
+
   checkin = () => {
     let location = {
       player_id: this.props.current.id,
@@ -35,6 +38,30 @@ class CourtDetail extends Component {
 
     this.updatePlayerActivity(location)
   }
+
+  updatePlayerActivity = data => {
+    fetch(`${API}/player_courts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).then(() => this.fetchActive())
+  }
+
+  fetchActive = () => {
+    fetch(`${API}/courts/${this.props.details.id + 1}`)
+    .then(res => res.json())
+    .then(court => this.setState({
+      active: court.active_players,
+
+      at_court: this.props.current ? court.active_players.find(p => {
+          return  p.username === this.props.current.username }) : null
+      })
+    )
+  }
+
+  //////////////// FAVORITING ///////////////
 
   favorite = () => {
     console.log('adding favorite');
@@ -60,16 +87,6 @@ class CourtDetail extends Component {
     this.updateFavorite(location)
   }
 
-  updatePlayerActivity = data => {
-    fetch(`${API}/player_courts`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    }).then(() => this.fetchActive())
-  }
-
   updateFavorite = data => {
     fetch(`${API}/player_courts`, {
       method: 'POST',
@@ -78,18 +95,6 @@ class CourtDetail extends Component {
       },
       body: JSON.stringify(data)
     }).then(() => this.fetchFavorite())
-  }
-
-  fetchActive = () => {
-    fetch(`${API}/courts/${this.props.details.id + 1}`)
-    .then(res => res.json())
-    .then(court => this.setState({
-      active: court.active_players,
-
-      at_court: this.props.current ? court.active_players.find(p => {
-          return  p.username === this.props.current.username }) : null
-      })
-    )
   }
 
   fetchFavorite = () => {
@@ -104,6 +109,8 @@ class CourtDetail extends Component {
     )
   }
 
+  //////////// LIFECYCLE ////////////////
+  
   componentDidMount() {
     this.fetchActive()
     if(this.props.current) { this.fetchFavorite()}
