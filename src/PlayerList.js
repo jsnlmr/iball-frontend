@@ -7,7 +7,7 @@ class PlayerList extends Component {
   }
 
   renderActivePlayers = () => {
-    return []//this.props.players.map(p => <li key={p}>{p}</li>)
+    return this.props.players.map(p => <li key={p}>{p.username}</li>)
   }
 
   render() {

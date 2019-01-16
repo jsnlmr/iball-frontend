@@ -32,11 +32,10 @@ class App extends Component {
   }
 
   handleMouseEnter = () => {
-    Map.style = {cursor: 'pointer'}
+    this.map.style = {cursor: 'pointer'}
   }
 
   closePopup = () => {
-    console.log('close popup');
     this.setState({selected: null})
   }
 
@@ -60,6 +59,10 @@ class App extends Component {
     e.target.reset()
   }
 
+  logoutUser = () => {
+    this.setState({current_user: null})
+  }
+
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(position => {
       this.setState({
@@ -74,43 +77,53 @@ class App extends Component {
     fetch(`${API}/players`).then(res => res.json()).then(players => {
       this.setState({players: players})
     })
+
+  }
+
+  onMapLoad = map => {
+      console.log(map);
   }
 
   render() {
-
-
     return (
       <div>
-        <Navbar current={this.state.current_user} login={this.loginUser} />
-        <Map
-          style='mapbox://styles/mapbox/light-v9'
-          containerStyle={{
-            height: "100vh",
-            width: "100vw"
-          }}
-          center={[-77.032883, 38.898129]}
-        >
-          <Layer
-            type="circle"
+        <div id='nav'>
+          <Navbar current={this.state.current_user} login={this.loginUser} logout={this.logoutUser}/>
+        </div>
+        <div id='map'>
+          <Map
+            ref={e => {this.map = e}}
+            style='mapbox://styles/mapbox/light-v9'
+            containerStyle={{
+              height: "100vh",
+              width: "100vw"
+            }}
+            center={[-77.032883, 38.898129]}
+            onStyleLoad={this.onMapLoad}
+          >
+            <Layer
+              type="circle"
 
-            paint={{
-              'circle-color': 'red',
-              'circle-stroke-width': 1,
-            }}>
-            { this.mapCourts() }
-          </Layer>
-          {
-            this.state.selected ?
-              <Sidebar.Pushable id='sidebar' animation='push' direction='left'
-                visible vertical >
-                <CourtDetail close={this.closePopup}
-                  current={this.state.current_user}
-                  details={this.state.selected} />
-              </Sidebar.Pushable>
-            :
-              null
-          }
-        </Map>
+              paint={{
+                'circle-color': 'red',
+                'circle-stroke-width': 1,
+              }}>
+
+              { this.mapCourts() }
+            </Layer>
+            {
+              this.state.selected ?
+                <Sidebar.Pushable id='sidebar' animation='push' direction='left'
+                  visible vertical >
+                  <CourtDetail close={this.closePopup}
+                    current={this.state.current_user}
+                    details={this.state.selected} />
+                </Sidebar.Pushable>
+              :
+                null
+            }
+          </Map>
+        </div>
       </div>
     );
   }

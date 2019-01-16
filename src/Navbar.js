@@ -38,7 +38,7 @@ class Navbar extends Component {
           </Menu.Item>
 
           <Menu.Item>
-            <Button primary>LOGOUT</Button>
+            <Button primary onClick={this.props.logout}>LOGOUT</Button>
           </Menu.Item>
         </Menu.Menu>
      </Menu>
@@ -71,15 +71,3 @@ class Navbar extends Component {
 }
 
 export default Navbar
-
-// <div>
-//   <span id='logo'>iBall</span>
-//   <span>
-//     <label>Username</label>
-//     <input />
-//   </span>
-//   <span>
-//     <label>Password</label>
-//     <input />
-//   </span>
-// </div>
