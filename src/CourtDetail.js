@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PlayerList from './PlayerList'
-import { Icon, Segment } from 'semantic-ui-react'
+import { Icon, Sidebar } from 'semantic-ui-react'
 
 const API = 'http://localhost:3001/api/v1'
 
@@ -110,7 +110,7 @@ class CourtDetail extends Component {
   }
 
   //////////// LIFECYCLE ////////////////
-  
+
   componentDidMount() {
     this.fetchActive()
     if(this.props.current) { this.fetchFavorite()}
@@ -118,7 +118,8 @@ class CourtDetail extends Component {
 
   render() {
     return(
-      <Segment id='court-detail'>
+      <Sidebar id='sidebar' animation='push' direction='left'
+        visible={true} vertical='true' >
         <button onClick={this.props.close}>x</button><br />
         <h3>{this.props.details.name}</h3>
         <h4>{this.props.details.address}</h4>
@@ -150,7 +151,7 @@ class CourtDetail extends Component {
             :
             null
         }
-      </Segment>
+      </Sidebar>
     )
   }
 }

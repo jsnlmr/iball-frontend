@@ -1,13 +1,11 @@
-import React, { Component } from 'react'
-import ReactMapBoxGL, { Layer, Feature, Popup } from 'react-mapbox-gl'
+import React, { Component, Fragment } from 'react'
 import './App.css'
 import Navbar from './Navbar'
+import MapDisplay from './MapDisplay'
 import CourtDetail from './CourtDetail'
+import Signup from './Signup'
 import { Menu, Sidebar, Segment } from 'semantic-ui-react'
-
-const Map = ReactMapBoxGL({
-  accessToken: process.env.REACT_APP_MAPBOX_PUBLIC_ACCESS_TOKEN,
-})
+import { Route, withRouter } from 'react-router-dom'
 
 const API = 'http://localhost:3001/api/v1'
 
@@ -27,26 +25,35 @@ class App extends Component {
     }
   }
 
+  /////////// MAP & NAVBAR RENDER //////////
+  renderMapNavbar = () => {
+    return (
+      <Fragment>
+        <div id='nav'>
+          <Navbar current={this.state.current_user} login={this.loginUser} logout={this.logoutUser}/>
+        </div>
+        <div id='map-display'>
+          <MapDisplay showCourt={this.showCourt}
+            courts={this.state.courts} gps={this.state.gps} />
+        </div>
+      </Fragment>
+    )
+  }
+
   //////////// COURT POPUP ////////////
 
-  showCourt = (e) => {
-    if(this.state.selected) {this.closeCourt()}
+  showCourt = (e => {
+    console.log('loading court details')
+    if(this.state.selected) { this.closeCourt() }
+
     this.setState({selected: e.feature.properties})
-  }
+
+    this.props.history.push(`/courts/${this.state.selected.id + 1}`)
+  })
 
   closeCourt = () => {
     this.setState({selected: null})
   }
-
-
-  /////////// COURT MAPPING ////////////
-
-  mapCourts = () => this.state.courts.map(court => {
-    return (
-      <Feature key={court.id} properties={court} coordinates={[court.lng, court.lat]}
-        onClick={this.showCourt} />
-    )
-  })
 
   ////////////// LOGIN/LOGOUT ////////////////
 
@@ -89,54 +96,33 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        <div id='nav'>
-          <Navbar current={this.state.current_user} login={this.loginUser} logout={this.logoutUser}/>
-        </div>
+      <div id='app'>
 
-        <div id='map'>
-          <Map
-            ref={e => {this.map = e}}
-            style='mapbox://styles/mapbox/light-v9'
-            containerStyle={{
-              height: "100vh",
-              width: "100vw"
-            }}
-            center={[-77.032883, 38.898129]}
-            onStyleLoad={this.onMapLoad}
-          >
-            <Layer
-              type="circle"
+        <Route exact path='/' render={() => this.renderMapNavbar()} />
 
-              paint={{
-                'circle-color': 'red',
-                'circle-stroke-width': 1,
-              }}>
+        <Route exact path='/signup' component={Signup} />
 
-              { this.mapCourts() }
-            </Layer>
-
-          </Map>
-          <div>
-          {
-            this.state.selected ?
-              <Sidebar id='sidebar' animation='push' direction='left'
-                visible vertical >
-                <CourtDetail close={this.closeCourt}
+        <Route exact path='/courts/:id' render={() => {
+          return (
+            <div>
+              {this.renderMapNavbar()}
+            {
+              this.state.selected ? <CourtDetail close={this.closeCourt}
                   current={this.state.current_user}
-                  details={this.state.selected} />
-              </Sidebar>
-            :
-              null
-          }
-          </div>
-        </div>
+                    details={this.state.selected} />
+              : null
+            }
+            </div>
+          )
+        }}/>
+
+
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default withRouter(App);
 
 
 // handleMouseEnter = () => {

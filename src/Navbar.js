@@ -49,10 +49,10 @@ class Navbar extends Component {
         <Menu.Menu position='right'>
           <Menu.Item>
             <Form onSubmit={this.props.login}>
-              <Input className='icon' icon='user' iconPosition='left'
+              <Form.Input className='icon' icon='user' iconPosition='left'
                 placeholder='Username' />
-              <Input className='icon' icon='lock' iconPosition='left'
-                placeholder='Password' />
+              <Form.Input className='icon' icon='lock' iconPosition='left'
+                placeholder='Password' type='password' />
                 <Menu.Item>
                   <Button type='submit' primary>LOGIN</Button>
                 </Menu.Item>
