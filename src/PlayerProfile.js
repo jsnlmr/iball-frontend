@@ -1,38 +1,15 @@
 import React, { Component } from 'react'
 import { Grid, Header, Image, Form, Button, Segment } from 'semantic-ui-react'
 
-const API = 'http://localhost:3001/api/v1'
-
-
-class Signup extends Component {
+class PlayerProfile extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      username: '',
-      password: ''
+      username: props.current.username,
+      password: '',
+      new_password: ''
     }
-  }
-
-  handleChange = e => {
-    this.setState({[e.target.name]: e.target.value})
-  }
-
-  handleSubmit = e => {
-    e.preventDefault()
-
-    let user = {
-      username: this.state.username
-    }
-
-    fetch(`${API}/players`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'applicaton/json'
-      },
-      body: JSON.stringify(user)
-    }).then(res => res.json()).then(player => this.props.addPlayer(player))
   }
 
   render() {
@@ -41,9 +18,9 @@ class Signup extends Component {
         <Grid textAlign='center' style={{ height: '100%' }} verticalAlign='middle'>
           <Grid.Column style={{ maxWidth: 450 }}>
             <Header as='h2' color='teal' textAlign='center'>
-              <Image src='/logo.png' /> Signup for Your Account
+              <Image src='/logo.png' /> Log-in to your account
             </Header>
-            <Form size='large' onSubmit={this.handleSubmit}>
+            <Form size='large'>
               <Segment stacked>
                 <Form.Input fluid icon='user' iconPosition='left'
                   placeholder='Username' value={this.state.username}
@@ -52,9 +29,11 @@ class Signup extends Component {
                   placeholder='Password' type='password'
                   value={this.state.password} onChange={this.handleChange}
                   name='password' />
-                <Button color='teal' fluid size='large'
-                  type='submit'>
-                  Register Account</Button>
+                  <Form.Input fluid icon='lock' iconPosition='left'
+                    placeholder='New Password' type='password'
+                    value={this.state.new_password} onChange={this.handleChange}
+                    name='new_password' />
+                <Button color='teal' fluid size='large'>Login</Button>
               </Segment>
             </Form>
           </Grid.Column>
@@ -64,4 +43,4 @@ class Signup extends Component {
   }
 }
 
-export default Signup
+export default PlayerProfile

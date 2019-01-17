@@ -1,15 +1,29 @@
 import React, { Component } from 'react'
 import { Menu, Item, Button, Dropdown, Input, Form } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
+import Favorite from './Favorite'
 
 class Navbar extends Component {
   constructor(props) {
     super(props)
   }
 
-  dipsplayNav = () => {
-    return ( this.props.current ? (
+  renderFavorites = () => {
+    let favs = this.props.current.favorites
+
+    return favs.map(f => <Favorite key={f.id} court={f} /> )
+
+    // favs.forEach(fav => {
+    //   fetchFavorite(id)
+    // })
+  }
+
+
+
+  loggedInNav = () => {
+    return (
       <Menu fixed='top' size='large'>
-        <Menu.Item icon>iBall</Menu.Item>
+        <Menu.Item as={Link} to='/' icon>iBall</Menu.Item>
 
         <Dropdown item text='Friends'>
           <Dropdown.Menu>
@@ -22,14 +36,11 @@ class Navbar extends Component {
 
         <Dropdown item text='Favorites'>
           <Dropdown.Menu>
-            <Dropdown.Item text='Favorite 1' description='9 Active' />
-            <Dropdown.Item text='Favorite 2' description='5 Active' />
-            <Dropdown.Divider />
-            <Dropdown.Item text='Favorite 3' description='Inactive' />
+            {this.renderFavorites()}
           </Dropdown.Menu>
         </Dropdown>
 
-        <Menu.Item name='profile' />
+        <Menu.Item as={Link} to='/profile' name='profile' />
 
         <Menu.Menu position='right'>
           <Menu.Item>
@@ -41,10 +52,14 @@ class Navbar extends Component {
             <Button primary onClick={this.props.logout}>LOGOUT</Button>
           </Menu.Item>
         </Menu.Menu>
-     </Menu>
-    ) : (
+      </Menu>
+    )
+  }
+
+  loggedOutNav = () => {
+    return (
       <Menu size='large'>
-        <Menu.Item icon>iBall</Menu.Item>
+        <Menu.Item as={Link} to='/' icon>iBall</Menu.Item>
 
         <Menu.Menu position='right'>
           <Menu.Item>
@@ -55,19 +70,24 @@ class Navbar extends Component {
                 placeholder='Password' type='password' />
                 <Menu.Item>
                   <Button type='submit' primary>LOGIN</Button>
+                  <Link to='/signup'>Register as New User</Link>
                 </Menu.Item>
             </Form>
           </Menu.Item>
 
         </Menu.Menu>
       </Menu>
-      )
     )
   }
 
   render() {
-    return this.dipsplayNav()
+    return this.props.current ? this.loggedInNav() : this.loggedOutNav()
   }
 }
 
 export default Navbar
+
+// <Dropdown.Item text='Favorite 1' description='9 Active' />
+// <Dropdown.Item text='Favorite 2' description='5 Active' />
+// <Dropdown.Divider />
+// <Dropdown.Item text='Favorite 3' description='Inactive' />

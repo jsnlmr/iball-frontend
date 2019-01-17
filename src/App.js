@@ -4,6 +4,7 @@ import Navbar from './Navbar'
 import MapDisplay from './MapDisplay'
 import CourtDetail from './CourtDetail'
 import Signup from './Signup'
+import PlayerProfile from './PlayerProfile'
 import { Menu, Sidebar, Segment } from 'semantic-ui-react'
 import { Route, withRouter } from 'react-router-dom'
 
@@ -26,17 +27,20 @@ class App extends Component {
   }
 
   /////////// MAP & NAVBAR RENDER //////////
-  renderMapNavbar = () => {
+  renderNavbar = () => {
     return (
-      <Fragment>
-        <div id='nav'>
-          <Navbar current={this.state.current_user} login={this.loginUser} logout={this.logoutUser}/>
-        </div>
-        <div id='map-display'>
-          <MapDisplay showCourt={this.showCourt}
-            courts={this.state.courts} gps={this.state.gps} />
-        </div>
-      </Fragment>
+      <div id='nav'>
+        <Navbar current={this.state.current_user} login={this.loginUser} logout={this.logoutUser}/>
+      </div>
+    )
+  }
+
+  renderMap = () => {
+    return (
+      <div id='map-display'>
+        <MapDisplay showCourt={this.showCourt}
+          courts={this.state.courts} gps={this.state.gps} />
+      </div>
     )
   }
 
@@ -75,6 +79,15 @@ class App extends Component {
     this.setState({current_user: null})
   }
 
+  newPlayer = player => {
+    let players = [...this.state.players, player]
+
+    this.setState({
+      players: players,
+      current_user: player
+    }, this.props.history.push('/'))
+  }
+
   /////////// LIFECYCLE //////////////
 
   componentDidMount() {
@@ -98,14 +111,35 @@ class App extends Component {
     return (
       <div id='app'>
 
-        <Route exact path='/' render={() => this.renderMapNavbar()} />
+        <Route exact path='/' render={() => {
+          return (
+            <Fragment>
+              { this.renderNavbar() }
+              { this.renderMap() }
+            </Fragment>
 
-        <Route exact path='/signup' component={Signup} />
+          )
+        }} />
+
+        <Route exact path='/signup' render={() =>
+          <Signup addPlayer={this.newPlayer} /> } />
+
+        <Route exact path='/profile' render={() => {
+          return (
+            <Fragment>
+              <Fragment>
+                { this.renderNavbar() }
+              </Fragment>
+              <PlayerProfile current={this.state.current_user} />
+            </Fragment>
+          )
+        }} />
 
         <Route exact path='/courts/:id' render={() => {
           return (
             <div>
-              {this.renderMapNavbar()}
+              { this.renderNavbar() }
+              { this.renderMap() }
             {
               this.state.selected ? <CourtDetail close={this.closeCourt}
                   current={this.state.current_user}
