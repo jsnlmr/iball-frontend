@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ReactMapBoxGL, { Layer, Feature, Popup } from 'react-mapbox-gl'
+import { Container } from 'semantic-ui-react'
 
 const Map = ReactMapBoxGL({
   accessToken: process.env.REACT_APP_MAPBOX_PUBLIC_ACCESS_TOKEN,
@@ -38,7 +39,7 @@ class MapDisplay extends Component {
 
     return (
       !this.state.loading ?
-      <div id='map'>
+      <Container id='map'>
         <Map
           ref={e => {this.map = e}}
           style='mapbox://styles/mapbox/light-v9'
@@ -61,7 +62,7 @@ class MapDisplay extends Component {
             { this.mapCourts() }
           </Layer>
         </Map>
-      </div> : null
+      </Container> : null
     )
   }
 }

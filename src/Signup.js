@@ -23,7 +23,8 @@ class Signup extends Component {
     e.preventDefault()
 
     let user = {
-      username: this.state.username
+      username: this.state.username,
+      password: this.state.password
     }
 
     fetch(`${API}/players`, {

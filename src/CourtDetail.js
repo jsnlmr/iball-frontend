@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PlayerList from './PlayerList'
+import CourtInfo from './CourtInfo'
 import { Icon, Sidebar } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
 
@@ -171,8 +172,7 @@ class CourtDetail extends Component {
         <Sidebar id='sidebar' animation='push' direction='left'
           visible={true} vertical='true' >
           <button onClick={this.closeCourt}>x</button><br />
-          <h3>{this.state.court.name}</h3>
-          <h4>{this.state.court.address}</h4>
+          <CourtInfo court={this.state.court} />
 
           { this.allowFavorite() }
 

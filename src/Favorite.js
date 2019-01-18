@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { Dropdown } from 'semantic-ui-react'
+import { withRouter } from 'react-router-dom'
 
 const API = 'http://localhost:3001/api/v1'
 
@@ -29,14 +30,15 @@ class Favorite extends Component {
         {
           this.state.players.length === 0 ?
             <Dropdown.Item text={this.props.court.name}
-              description='Inactive' />
+              description='Inactive' onClick={() => this.props.history.push(`/courts/${this.props.court.id}`)} />
               :
             <Dropdown.Item text={this.props.court.name}
-              description={`${this.state.players.length} Active`} />
+              description={`${this.state.players.length} Active`}
+              onClick={() => this.props.history.push(`/courts/${this.props.court.id}`)} />
         }
       </Fragment>
     )
   }
 }
 
-export default Favorite
+export default withRouter(Favorite)
