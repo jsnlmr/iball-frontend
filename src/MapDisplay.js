@@ -8,22 +8,36 @@ const Map = ReactMapBoxGL({
 class MapDisplay extends Component {
   constructor(props){
     super(props)
+
+    this.state = {
+      loading: true
+    }
   }
 
   /////////// COURT MAPPING ////////////
 
   mapCourts = () => this.props.courts.map(court => {
     return (
-      <Feature key={court.id} properties={court} coordinates={[court.lng, court.lat]}
-        onClick={this.props.showCourt} />
+      <Feature key={court.id} properties={court} coordinates={[court.lng, court.lat]} onClick={this.props.showCourt} />
     )
   })
 
 
   /////////// LIFECYCLE /////////////
 
+  componentDidMount() {
+    navigator.geolocation.getCurrentPosition(position => {
+      this.setState({
+        gps: [position.coords.longitude, position.coords.latitude],
+        loading: false
+      })
+    })
+  }
+
   render() {
+
     return (
+      !this.state.loading ?
       <div id='map'>
         <Map
           ref={e => {this.map = e}}
@@ -32,7 +46,8 @@ class MapDisplay extends Component {
             height: "100vh",
             width: "100vw"
           }}
-          center={[-77.032883, 38.898129]}
+          center={[this.state.gps[0], this.state.gps[1]]}
+          zoom={[12]}
           onStyleLoad={this.onMapLoad}
         >
           <Layer
@@ -46,11 +61,11 @@ class MapDisplay extends Component {
             { this.mapCourts() }
           </Layer>
         </Map>
-      </div>
+      </div> : null
     )
   }
 }
 
 export default MapDisplay
 
-//
+//[-77.032883, 38.898129]

@@ -6,23 +6,23 @@ import CourtDetail from './CourtDetail'
 import Signup from './Signup'
 import PlayerProfile from './PlayerProfile'
 import { Menu, Sidebar, Segment } from 'semantic-ui-react'
-import { Route, withRouter } from 'react-router-dom'
+import { Route, withRouter, Switch } from 'react-router-dom'
 
 const API = 'http://localhost:3001/api/v1'
+const NAV_URLS = ['/', '/profile', '/courts/:id']
+const MAP_URLS = ['/', '/courts/:id']
 
 
 class App extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
 
     this.state = {
       players: [],
       friends: [],
       favorites: [],
       courts: [],
-      selected: null,
       current_user: null,
-      gps: null
     }
   }
 
@@ -39,27 +39,19 @@ class App extends Component {
     return (
       <div id='map-display'>
         <MapDisplay showCourt={this.showCourt}
-          courts={this.state.courts} gps={this.state.gps} />
+          courts={this.state.courts} />
       </div>
     )
   }
 
   //////////// COURT POPUP ////////////
 
-  showCourt = (e => {
-    console.log('loading court details')
-    if(this.state.selected) { this.closeCourt() }
-
-    this.setState({selected: e.feature.properties})
-
-    this.props.history.push(`/courts/${this.state.selected.id + 1}`)
-  })
-
-  closeCourt = () => {
-    this.setState({selected: null})
+  showCourt = e => {
+    this.props.history.push('/')
+    this.props.history.push(`/courts/${e.feature.properties.id + 1}`)
   }
 
-  ////////////// LOGIN/LOGOUT ////////////////
+  ////////////// PLAYER MANAGEMENT ////////////////
 
   loginUser = e => {
     e.preventDefault()
@@ -68,15 +60,19 @@ class App extends Component {
     this.setState({
       current_user: this.state.players.find(p => {
         return p.username === username
-      })
+      }, this.props.history.push(`${this.props.location.pathname}`))
     })
 
     e.target.reset()
+    if(this.props.location.pathname === '/signup') {
+      this.props.history.push('/')
+    }
   }
 
   logoutUser = () => {
-    this.closeCourt()
-    this.setState({current_user: null})
+    this.setState({current_user: null},
+      this.props.history.push('/')
+    )
   }
 
   newPlayer = player => {
@@ -88,15 +84,25 @@ class App extends Component {
     }, this.props.history.push('/'))
   }
 
+  deletePlayer = player => {
+    this.setState({
+      players: this.state.players.filter(p => p.id !== player.id),
+      current_user: null
+    }, this.props.history.push('/'))
+  }
+
+  updatePlayer = player => {
+    let players = this.state.players.filter(p => p.id !== player.id)
+
+    this.setState({
+      players: [...players, player],
+      current_user: player
+    }, this.props.history.push('/'))
+  }
+
   /////////// LIFECYCLE //////////////
 
   componentDidMount() {
-    navigator.geolocation.getCurrentPosition(position => {
-      this.setState({
-        gps: [position.coords.longitude, position.coords.latitude]
-      })
-    })
-
     fetch(`${API}/courts`).then(res => res.json()).then(courts => {
       this.setState({courts: courts})
     })
@@ -104,53 +110,40 @@ class App extends Component {
     fetch(`${API}/players`).then(res => res.json()).then(players => {
       this.setState({players: players})
     })
-
   }
 
   render() {
     return (
+
       <div id='app'>
+        { this.renderNavbar() }
+        {
+          MAP_URLS.includes(this.props.location.pathname)
+            || this.props.location.pathname.split('/')[1] === 'courts'
+              ? this.renderMap() : null
+        }
 
-        <Route exact path='/' render={() => {
-          return (
-            <Fragment>
-              { this.renderNavbar() }
-              { this.renderMap() }
-            </Fragment>
+        <Switch>
+          <Route exact path='/signup' render={() =>
+            <Signup addPlayer={this.newPlayer} /> } />
 
-          )
-        }} />
-
-        <Route exact path='/signup' render={() =>
-          <Signup addPlayer={this.newPlayer} /> } />
-
-        <Route exact path='/profile' render={() => {
-          return (
-            <Fragment>
+          <Route exact path='/profile' render={() => {
+            return (
               <Fragment>
-                { this.renderNavbar() }
+                <PlayerProfile current={this.state.current_user}
+                  delete={this.deletePlayer} update={this.updatePlayer} />
               </Fragment>
-              <PlayerProfile current={this.state.current_user} />
-            </Fragment>
-          )
-        }} />
+            )
+          }} />
 
-        <Route exact path='/courts/:id' render={() => {
-          return (
-            <div>
-              { this.renderNavbar() }
-              { this.renderMap() }
-            {
-              this.state.selected ? <CourtDetail close={this.closeCourt}
-                  current={this.state.current_user}
-                    details={this.state.selected} />
-              : null
-            }
-            </div>
-          )
-        }}/>
-
-
+          <Route exact path='/courts/:id' render={() => {
+            return (
+              <Fragment>
+                <CourtDetail current={this.state.current_user} />
+              </Fragment>
+            )
+          }}/>
+        </Switch>
       </div>
     )
   }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Grid, Header, Image, Form, Button, Segment } from 'semantic-ui-react'
+import { withRouter } from 'react-router-dom'
 
 const API = 'http://localhost:3001/api/v1'
 
@@ -64,4 +65,4 @@ class Signup extends Component {
   }
 }
 
-export default Signup
+export default withRouter(Signup)

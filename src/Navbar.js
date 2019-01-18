@@ -12,15 +12,12 @@ class Navbar extends Component {
     let favs = this.props.current.favorites
 
     return favs.map(f => <Favorite key={f.id} court={f} /> )
-
-    // favs.forEach(fav => {
-    //   fetchFavorite(id)
-    // })
   }
 
 
 
   loggedInNav = () => {
+    let favs = this.renderFavorites()
     return (
       <Menu fixed='top' size='large'>
         <Menu.Item as={Link} to='/' icon>iBall</Menu.Item>
@@ -36,7 +33,9 @@ class Navbar extends Component {
 
         <Dropdown item text='Favorites'>
           <Dropdown.Menu>
-            {this.renderFavorites()}
+            {
+              favs.length !== 0 ? favs : <Dropdown.Item text='No Favorites' />
+            }
           </Dropdown.Menu>
         </Dropdown>
 
@@ -86,8 +85,3 @@ class Navbar extends Component {
 }
 
 export default Navbar
-
-// <Dropdown.Item text='Favorite 1' description='9 Active' />
-// <Dropdown.Item text='Favorite 2' description='5 Active' />
-// <Dropdown.Divider />
-// <Dropdown.Item text='Favorite 3' description='Inactive' />

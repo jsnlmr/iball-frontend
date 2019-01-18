@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 
 class PlayerList extends Component {
 
@@ -16,10 +16,12 @@ class PlayerList extends Component {
       <div>
       {
         players.length > 0 ? (
-          <ol>
+          <Fragment>
             <h4>Active Players</h4>
-            { players }
-          </ol>
+            <ol>
+              { players }
+            </ol>
+          </Fragment>
         ) : <h4>No Active Players</h4>
 
       }
