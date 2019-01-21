@@ -105,7 +105,7 @@ class MapDisplay extends Component {
 
             paint={
               {
-                'circle-color': 'red',
+                'circle-color': 'orangered',
                 'circle-stroke-width': 1,
                 'circle-radius': 7
               }
@@ -134,3 +134,11 @@ export default MapDisplay
 
 //[-77.032883, 38.898129]
 // onStyleLoad={this.onStyleLoad}
+// {
+//   "property": "active_players",
+//   "stops": [
+//     ['[]', 'blue'],
+//     // "temperature" is 100 -> circle color will be red
+//     ['', 'green']
+//   ]
+// }
