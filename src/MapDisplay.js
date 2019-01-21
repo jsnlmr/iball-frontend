@@ -1,15 +1,19 @@
 import React, { Component } from 'react'
 import ReactMapBoxGL, { Layer, Feature, Popup } from 'react-mapbox-gl'
 import { Container } from 'semantic-ui-react'
+import mapboxgl from 'mapbox-gl'
 
 const Map = ReactMapBoxGL({
   accessToken: process.env.REACT_APP_MAPBOX_PUBLIC_ACCESS_TOKEN,
 })
 
 
+
 class MapDisplay extends Component {
   constructor(props){
     super(props)
+
+    this.map = null
 
     this.state = {
       loading: true,
@@ -38,24 +42,36 @@ class MapDisplay extends Component {
           this.props.showCourt(e)
         }}
         onMouseEnter={(e, map) => this.hover(e, map)}
-        onMouseLeave={this.exit}
+        onMouseLeave={(e, map) => this.exit(e, map)}
       />
     )
   })
 
   hover = (e, map) => {
-    console.log(map)
+
+    if(this.map) {this.map.state.map.getCanvas().style.cursor = 'pointer'}
     this.setState({
       court: e.feature.properties
     })
   }
 
-  exit = () => {
+  exit = (e, map) => {
+    if(this.map) {this.map.state.map.getCanvas().style.cursor = ''}
     this.setState({
       court: null
     })
   }
 
+  onStyleLoad = map => {
+    map.addControl(new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true
+      },
+      trackUserLocation: false
+    }))
+
+    map.addControl(new mapboxgl.NavigationControl())
+ }
 
   /////////// LIFECYCLE /////////////
 
@@ -81,6 +97,8 @@ class MapDisplay extends Component {
           }}
           center={this.state.center}
           zoom={this.state.zoom}
+          onStyleLoad={this.onStyleLoad}
+
         >
           <Layer
             type="circle"
@@ -115,3 +133,4 @@ class MapDisplay extends Component {
 export default MapDisplay
 
 //[-77.032883, 38.898129]
+// onStyleLoad={this.onStyleLoad}
