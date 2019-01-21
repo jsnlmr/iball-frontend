@@ -63,7 +63,6 @@ class CourtDetail extends Component {
   }
 
   checkout = () => {
-    console.log('checking out');
     let location = {
       player_id: this.props.current.id,
       court_id: this.state.court.id,

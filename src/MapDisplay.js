@@ -48,7 +48,6 @@ class MapDisplay extends Component {
   })
 
   hover = (e, map) => {
-
     if(this.map) {this.map.state.map.getCanvas().style.cursor = 'pointer'}
     this.setState({
       court: e.feature.properties
@@ -60,6 +59,12 @@ class MapDisplay extends Component {
     this.setState({
       court: null
     })
+  }
+
+  playerPopup = () => {
+    let players = this.state.court.active_players.split('},{')
+    if(players[0] === "[]") { return `No Players @ ${this.state.court.name}`}
+    else {return `${players.length} Player @ ${this.state.court.name}`}
   }
 
   onStyleLoad = map => {
@@ -118,7 +123,7 @@ class MapDisplay extends Component {
             this.state.court ?
               <Popup coordinates={[this.state.court.lng,
                 this.state.court.lat]}>
-                <h4>{this.state.court.name}</h4>
+                <h4>{this.playerPopup()}</h4>
 
               </Popup>
               :
