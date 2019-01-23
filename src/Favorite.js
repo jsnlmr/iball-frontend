@@ -30,7 +30,9 @@ class Favorite extends Component {
         {
           this.state.players.length === 0 ?
             <Dropdown.Item text={this.props.court.name}
-              description='Inactive' onClick={() => this.props.history.push(`/courts/${this.props.court.id}`)} />
+              description='Inactive' onClick={() => {
+                this.props.history.push(`/courts/${this.props.court.id}`)
+              }} />
               :
             <Dropdown.Item text={this.props.court.name}
               description={`${this.state.players.length} Active`}

@@ -21,16 +21,47 @@ class App extends Component {
       players: [],
       friends: [],
       courts: [],
+      favorites: [],
       currentUser: null,
       loading: true,
     }
   }
 
+  fetchCourt = () => {
+    console.log('getting court', this.props);
+    let courtId = this.props.location.pathname.split('/')[2]
+    console.log(courtId);
+    fetch(`${API}/courts/${courtId}`).then(res => res.json())
+      .then(court => {
+        this.setState({
+          currentCourt: court
+        })
+        console.log(this.state.currentUser);
+        if(this.state.currentUser && !this.state.loading) {
+          this.setState({
+            favorited: this.state.currentUser.favorites,
+            atCourt: court.active_players.includes(p => p.id === this.state.currentUser.id)
+          })
+        }
+       })
+
+    // fetch(`${API}/courts/${this.props.match.params.id}`)
+    // .then(res => res.json())
+    // .then(court => this.setState({
+    //   court: court,
+    //   active: court.active_players,
+    //   at_court: this.props.current ? court.active_players.find(p => {
+    //       return  p.username === this.props.current.username }) : null
+    //   })
+    // )
+  }
+
+
   /////////// MAP & NAVBAR RENDER //////////
   renderNavbar = () => {
     return (
       <Fragment>
-        <Navbar current={this.state.currentUser} login={this.loginUser} logout={this.logoutUser}/>
+        <Navbar current={this.state.currentUser} login={this.loginUser} logout={this.logoutUser} favorites={this.state.favorites}/>
       </Fragment>
     )
   }
@@ -109,10 +140,10 @@ class App extends Component {
   }
 
   updatePlayer = player => {
-    let players = this.state.players.filter(p => p.id !== player.id)
+    //let players = this.state.players.filter(p => p.id !== player.id)
 
     this.setState({
-      players: [...players, player],
+      //players: [...players, player],
       currentUser: player
     }, this.props.history.push('/'))
   }
@@ -138,6 +169,7 @@ class App extends Component {
         }
       }).then(res => res.json()).then(player => this.setState({
         currentUser: player,
+        favorites: player.favorites,
         loading: false
       }))
     } else {
@@ -170,7 +202,8 @@ class App extends Component {
           <Route exact path='/courts/:id' render={() => {
             return (
               <Fragment>
-                <CourtDetail current={this.state.currentUser} />
+                <CourtDetail current={this.state.currentUser} court={this.state.currentCourt}
+                fetchCourt={this.fetchCourt} />
               </Fragment>
             )
           }} />

@@ -159,8 +159,9 @@ class CourtDetail extends Component {
   //////////// LIFECYCLE ////////////////
 
   componentDidMount() {
-
+    console.log(this.props);
     this.fetchCourt()
+    this.props.fetchCourt()
     if(this.props.current) { this.fetchFavorite()}
   }
 

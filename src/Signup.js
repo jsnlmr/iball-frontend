@@ -34,7 +34,8 @@ class Signup extends Component {
         'Accept': 'applicaton/json'
       },
       body: JSON.stringify(user)
-    }).then(res => res.json()).then(player => this.props.addPlayer(player))
+    }).then(res => res.json()).then(data => console.log(data))
+    // .then(player => this.props.addPlayer(player))
   }
 
   render() {
