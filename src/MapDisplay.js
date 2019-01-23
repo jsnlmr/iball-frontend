@@ -2,11 +2,13 @@ import React, { Component } from 'react'
 import ReactMapBoxGL, { Layer, Feature, Popup } from 'react-mapbox-gl'
 import { Container } from 'semantic-ui-react'
 import mapboxgl from 'mapbox-gl'
+import MapHover from './MapHover'
 
 const Map = ReactMapBoxGL({
   accessToken: process.env.REACT_APP_MAPBOX_PUBLIC_ACCESS_TOKEN,
 })
 
+const API = 'http://localhost:3001/api/v1'
 
 
 class MapDisplay extends Component {
@@ -18,11 +20,10 @@ class MapDisplay extends Component {
     this.state = {
       loading: true,
       court: null,
-      center: [0, 0],
-      zoom: [12],
+      center: null,
+      zoom: null
     }
   }
-
 
   /////////// COURT MAPPING ////////////
 
@@ -49,9 +50,14 @@ class MapDisplay extends Component {
 
   hover = (e, map) => {
     if(this.map) {this.map.state.map.getCanvas().style.cursor = 'pointer'}
-    this.setState({
-      court: e.feature.properties
-    })
+    fetch(`${API}/courts/${e.feature.properties.id + 1}`)
+      .then(res => res.json()).then(court => {
+
+        this.setState({
+          court: court
+        })
+      })
+
   }
 
   exit = (e, map) => {
@@ -80,14 +86,25 @@ class MapDisplay extends Component {
 
   /////////// LIFECYCLE /////////////
 
+  componentDidUpdate(prevProps) {
+    if(prevProps.currentCourt !== this.props.currentCourt) {
+      let court = this.props.currentCourt
+      this.setState({
+        center: [court.lng, court.lat],
+        zoom: [15]
+      })
+    }
+  }
+
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(position => {
       this.setState({
-        center: [position.coords.longitude, position.coords.latitude],
-        loading: false
+          center: [position.coords.longitude, position.coords.latitude],
+          zoom: [12],
+          loading: false
+        })
       })
-    })
-  }
+    }
 
   render() {
     return (
@@ -120,14 +137,7 @@ class MapDisplay extends Component {
             { this.mapCourts() }
           </Layer>
           {
-            this.state.court ?
-              <Popup coordinates={[this.state.court.lng,
-                this.state.court.lat]}>
-                <h4>{this.playerPopup()}</h4>
-
-              </Popup>
-              :
-              null
+            this.state.court ? <MapHover court={this.state.court} /> : null
           }
         </Map>
       </Container> : null

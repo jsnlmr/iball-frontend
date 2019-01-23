@@ -23,6 +23,11 @@ class Favorite extends Component {
     this.fetchInfo(this.props.court.id)
   }
 
+  clickHandler = () => {
+    this.props.history.push(`/courts/${this.props.court.id}`)
+    this.props.fetchCourt(this.props.court.id)
+  }
+
   render() {
 
     return (
@@ -30,13 +35,11 @@ class Favorite extends Component {
         {
           this.state.players.length === 0 ?
             <Dropdown.Item text={this.props.court.name}
-              description='Inactive' onClick={() => {
-                this.props.history.push(`/courts/${this.props.court.id}`)
-              }} />
+              description='Inactive' onClick={this.clickHandler} />
               :
             <Dropdown.Item text={this.props.court.name}
               description={`${this.state.players.length} Active`}
-              onClick={() => this.props.history.push(`/courts/${this.props.court.id}`)} />
+              onClick={this.clickHandler} />
         }
       </Fragment>
     )

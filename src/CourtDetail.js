@@ -39,7 +39,6 @@ class CourtDetail extends Component {
   }
 
   allowAccess = () => {
-    console.log('flipping access');
     return this.props.current ?
       this.props.atCourt ?
         <button onClick={this.props.checkout}>Check-Out</button>
@@ -50,7 +49,8 @@ class CourtDetail extends Component {
   }
 
   componentDidMount() {
-    this.props.updatePlayerActivity()
+    this.props.fetchCourt()
+    //this.props.updatePlayerActivity()
     // this.props.getCourt()
     // if(this.props.current) { this.fetchFavorite()}
   }

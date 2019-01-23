@@ -20,7 +20,7 @@ class Navbar extends Component {
   renderFavorites = () => {
     let favs = this.props.favorites
 
-    return favs.map(f => <Favorite key={f.id} court={f} /> )
+    return favs.map(f => <Favorite key={f.id} court={f} fetchCourt={this.props.fetchCourt} /> )
   }
 
   handleChange = e => {
@@ -63,7 +63,14 @@ class Navbar extends Component {
           <Container>
             <Menu.Item as={Link}  to='/' header>iBall</Menu.Item>
 
-
+            <Dropdown item text='Friends'>
+              <Dropdown.Menu>
+                <Dropdown.Item text='Friend 1' description='Online' />
+                <Dropdown.Item text='Friend 2' description='Online' />
+                <Dropdown.Divider />
+                <Dropdown.Item text='Friend 3' description='Offline' />
+              </Dropdown.Menu>
+            </Dropdown>
 
             <Dropdown item text='Favorites'>
               <Dropdown.Menu>
@@ -130,12 +137,3 @@ class Navbar extends Component {
 }
 
 export default Navbar
-
-// <Dropdown item text='Friends'>
-//   <Dropdown.Menu>
-//     <Dropdown.Item text='Friend 1' description='Online' />
-//     <Dropdown.Item text='Friend 2' description='Online' />
-//     <Dropdown.Divider />
-//     <Dropdown.Item text='Friend 3' description='Offline' />
-//   </Dropdown.Menu>
-// </Dropdown>

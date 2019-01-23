@@ -27,20 +27,21 @@ class App extends Component {
     }
   }
 
-  fetchCourt = () => {
-    console.log('getting court', this.props);
-    let courtId = this.props.location.pathname.split('/')[2]
-    console.log(courtId);
+  fetchCourt = (id=null) => {
+    let courtId
+    if(id) { courtId = id}
+    else { courtId = this.props.location.pathname.split('/')[2] }
+
     fetch(`${API}/courts/${courtId}`).then(res => res.json())
       .then(court => {
         this.setState({
           currentCourt: court
         })
-        console.log(this.state.currentUser);
+
         if(this.state.currentUser && !this.state.loading) {
           this.setState({
             favorited: this.state.currentUser.favorites,
-            atCourt: court.active_players.includes(p => p.id === this.state.currentUser.id)
+            // atCourt: court.active_players.includes(p => p.id === this.state.currentUser.id)
           })
         }
        })
@@ -61,7 +62,8 @@ class App extends Component {
   renderNavbar = () => {
     return (
       <Fragment>
-        <Navbar current={this.state.currentUser} login={this.loginUser} logout={this.logoutUser} favorites={this.state.favorites}/>
+        <Navbar current={this.state.currentUser} login={this.loginUser} logout={this.logoutUser} favorites={this.state.favorites}
+        fetchCourt={this.fetchCourt} />
       </Fragment>
     )
   }
@@ -76,8 +78,7 @@ class App extends Component {
   renderMap = () => {
     return (
       <Fragment>
-        <MapDisplay showCourt={this.showCourt}
-          courts={this.state.courts} />
+        <MapDisplay showCourt={this.showCourt} courts={this.state.courts}  currentCourt={this.state.currentCourt} />
       </Fragment>
     )
   }
@@ -87,17 +88,16 @@ class App extends Component {
 
   showCourt = e => {
     //this.props.history.push('/')
-    console.log('showing court', e);
-
 
       fetch(`${API}/courts/${e.feature.properties.id + 1}`)
         .then(res => res.json()).then(court => {
           this.setState({
             currentCourt: court,
-            atCourt: court.active_players.find(p => p.id === this.state.currentUser.id)
+            atCourt: this.state.currentUser ? court.active_players.find(p => p.id === this.state.currentUser.id) : null
           })
 
-          fetch(`${API}/players/${this.state.currentUser.id}`)
+          if(this.state.currentUser) {
+            fetch(`${API}/players/${this.state.currentUser.id}`)
             .then(res => res.json())
             .then(player => {
                 this.setState({
@@ -106,7 +106,7 @@ class App extends Component {
                   })
                 })
               }
-            )
+            )}
 
         // active: court.active_players,
         // at_court: this.props.current ? court.active_players.find(p => {
@@ -114,14 +114,11 @@ class App extends Component {
       }).then(this.props.history.push(`/courts/${e.feature.properties.id + 1}`))
 
     //this.props.history.push(`/courts/${e.feature.properties.id + 1}`)
-
-
   }
 
   ////////////////////////////////////
 
   checkin = () => {
-    console.log('checking in');
     let location = {
       player_id: this.state.currentUser.id,
       court_id: this.state.currentCourt.id,
@@ -132,7 +129,6 @@ class App extends Component {
   }
 
   checkout = () => {
-    console.log('checking out');
     let location = {
       player_id: this.state.currentUser.id,
       court_id: this.state.currentCourt.id,
@@ -168,7 +164,6 @@ class App extends Component {
   //////////////// FAVORITING ///////////////
 
   favorite = () => {
-    console.log('favoriting');
     let location = {
       player_id: this.state.currentUser.id,
       court_id: this.state.currentCourt.id,
@@ -179,7 +174,7 @@ class App extends Component {
 
 
   unfavorite = () => {
-    console.log('unfavoriting');
+
     let location = {
       player_id: this.state.currentUser.id,
       court_id: this.state.currentCourt.id,
@@ -203,7 +198,7 @@ class App extends Component {
       .then(res => res.json()).then(player => {
         this.setState({
           currentUser: player,
-          favorites: player.favorites 
+          favorites: player.favorites
         })
       })
     })
@@ -212,7 +207,11 @@ class App extends Component {
   ////////////// PLAYER MANAGEMENT ////////////////
 
   loginUser = player => {
-    this.setState({currentUser: player})
+    this.setState({
+      currentUser: player,
+      favorites: player.favorites,
+      atCourt: this.state.currentCourt ? this.state.currentCourt.active_players.find(p => p.id === player.id) : null
+    })
     if(this.props.location.pathname === '/signup') {
       this.props.history.push('/')
     }
@@ -254,6 +253,10 @@ class App extends Component {
   /////////// LIFECYCLE //////////////
 
   componentDidMount() {
+    if(this.props.match.url === '/courts') {
+      this.fetchCourt(this.props.location.pathname.split('/')[2])
+    }
+    
     fetch(`${API}/courts`).then(res => res.json()).then(courts => {
       this.setState({courts: courts})
     })
@@ -270,11 +273,13 @@ class App extends Component {
         headers: {
           'Authentication': `Bearer ${token}`
         }
-      }).then(res => res.json()).then(player => this.setState({
-        currentUser: player,
-        favorites: player.favorites,
-        loading: false
-      }))
+      }).then(res => res.json()).then(player => {
+          this.setState({
+          currentUser: player,
+          favorites: player.favorites,
+          loading: false
+        })
+      })
     } else {
       this.setState({loading: false})
     }
@@ -297,7 +302,7 @@ class App extends Component {
 
         <Switch>
           <Route exact path='/signup' render={() =>
-            <Signup addPlayer={this.newPlayer} /> } />
+            <Signup login={this.loginUser} /> } />
 
           <Route exact path='/profile' render={() => this.state.loading ? null : this.showProfile()
           } />
@@ -310,7 +315,8 @@ class App extends Component {
                 favorite={this.favorite} unfavorite={this.unfavorite}
                 checkin={this.checkin} checkout={this.checkout}
                 updatePlayerActivity={this.updatePlayerActivity}
-                atCourt={this.state.atCourt}/>
+                atCourt={this.state.atCourt} fetchCourt={this.fetchCourt}
+                />
               </Fragment>
             )
             }} /> : null
