@@ -12,12 +12,13 @@ class Navbar extends Component {
 
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      favorites: []
     }
   }
 
   renderFavorites = () => {
-    let favs = this.props.current.favorites
+    let favs = this.props.favorites
 
     return favs.map(f => <Favorite key={f.id} court={f} /> )
   }
@@ -62,14 +63,7 @@ class Navbar extends Component {
           <Container>
             <Menu.Item as={Link}  to='/' header>iBall</Menu.Item>
 
-            <Dropdown item text='Friends'>
-              <Dropdown.Menu>
-                <Dropdown.Item text='Friend 1' description='Online' />
-                <Dropdown.Item text='Friend 2' description='Online' />
-                <Dropdown.Divider />
-                <Dropdown.Item text='Friend 3' description='Offline' />
-              </Dropdown.Menu>
-            </Dropdown>
+
 
             <Dropdown item text='Favorites'>
               <Dropdown.Menu>
@@ -124,9 +118,24 @@ class Navbar extends Component {
     )
   }
 
+  // componentDidMount() {
+  //   if(this.props.current) {
+  //     fetch(`${API}/players/${this.props.current.id}`).then(res => res.json()).then(player => this.setState({favorites: player.favorites})
+  //   )}
+  // }
+
   render() {
     return this.props.current ? this.loggedInNav() : this.loggedOutNav()
   }
 }
 
 export default Navbar
+
+// <Dropdown item text='Friends'>
+//   <Dropdown.Menu>
+//     <Dropdown.Item text='Friend 1' description='Online' />
+//     <Dropdown.Item text='Friend 2' description='Online' />
+//     <Dropdown.Divider />
+//     <Dropdown.Item text='Friend 3' description='Offline' />
+//   </Dropdown.Menu>
+// </Dropdown>

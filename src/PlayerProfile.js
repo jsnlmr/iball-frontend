@@ -11,7 +11,7 @@ class PlayerProfile extends Component {
     this.state = {
       username: props.current.username,
       password: '',
-      new_password: ''
+      newPassword: ''
     }
   }
 
@@ -26,7 +26,8 @@ class PlayerProfile extends Component {
 
   handleSubmit = () => {
     let player = {
-      username: this.state.username
+      username: this.state.username,
+      password: this.state.newPassword
     }
 
     fetch(`${API}/players/${this.props.current.id}`, {
@@ -52,14 +53,11 @@ class PlayerProfile extends Component {
                 <Form.Input fluid icon='user' iconPosition='left'
                   placeholder='Username' value={this.state.username}
                   onChange={this.handleChange} name='username' />
-                <Form.Input fluid icon='lock' iconPosition='left'
-                  placeholder='Password' type='password'
-                  value={this.state.password} onChange={this.handleChange}
-                  name='password' />
+
                   <Form.Input fluid icon='lock' iconPosition='left'
                     placeholder='New Password' type='password'
-                    value={this.state.new_password} onChange={this.handleChange}
-                    name='new_password' />
+                    value={this.state.newPassword} onChange={this.handleChange}
+                    name='newPassword' />
                 <Button color='teal' fluid size='large' type='submit'>
                   Update My Profile
                 </Button>
@@ -74,3 +72,8 @@ class PlayerProfile extends Component {
 }
 
 export default PlayerProfile
+
+// <Form.Input fluid icon='lock' iconPosition='left'
+//   placeholder='Password' type='password'
+//   value={this.state.password} onChange={this.handleChange}
+//   name='password' />
