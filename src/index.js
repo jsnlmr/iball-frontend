@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom';
 import 'semantic-ui-css/semantic.min.css'
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import {BrowserRouter as Router} from 'react-router-dom'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import store from './redux/store.js'
 import { Provider } from 'react-redux'
 
 ReactDOM.render(
   <Provider store={store} >
     <Router>
-      <App />
+      <Route path="/:filter?" component={App} />
     </Router>
   </Provider>,
   document.getElementById('root')

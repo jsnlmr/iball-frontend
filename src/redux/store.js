@@ -1,6 +1,18 @@
 import { createStore } from 'redux'
 
-const reducer = (state, action) => state
+const initialState = {
+  players: [],
+  courts: [],
+  favorites: [],
+  currentUser: null,
+  clickedCourt: null,
+  hoverCourt: null,
+}
+
+const reducer = (state=initialState, action) => {
+  console.log(state, action);
+  return state
+}
 
 const store = createStore(reducer)
 

@@ -7,9 +7,9 @@ import Signup from './Signup'
 import PlayerProfile from './PlayerProfile'
 import { Menu, Sidebar, Segment, Container } from 'semantic-ui-react'
 import { Route, withRouter, Switch, Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 const API = 'http://localhost:3001/api/v1'
-const NAV_URLS = ['/', '/profile', '/courts/:id']
 const MAP_URLS = ['/', '/courts/:id']
 
 
@@ -22,7 +22,7 @@ class App extends Component {
       friends: [],
       courts: [],
       currentUser: null,
-      loading: true,
+      loading: true
     }
   }
 
@@ -53,31 +53,125 @@ class App extends Component {
 
   //////////// COURT POPUP ////////////
 
+
   showCourt = e => {
-    this.props.history.push('/')
-    this.props.history.push(`/courts/${e.feature.properties.id + 1}`)
+    //this.props.history.push('/')
+    console.log('showing court', e);
+
+
+      fetch(`${API}/courts/${e.feature.properties.id + 1}`)
+        .then(res => res.json()).then(court => {
+          this.setState({
+            currentCourt: court,
+            atCourt: court.active_players.find(p => p.id === this.state.currentUser.id)
+          })
+
+          fetch(`${API}/players/${this.state.currentUser.id}`)
+            .then(res => res.json())
+            .then(player => {
+                this.setState({
+                  favorited: player.favorites.find(c => {
+                    return c.id === court.id
+                  })
+                })
+              }
+            )
+
+        // active: court.active_players,
+        // at_court: this.props.current ? court.active_players.find(p => {
+        //     return  p.username === this.props.current.username }) : null
+      }).then(this.props.history.push(`/courts/${e.feature.properties.id + 1}`))
+
+    //this.props.history.push(`/courts/${e.feature.properties.id + 1}`)
+
+
+  }
+
+  ////////////////////////////////////
+
+  checkin = () => {
+    console.log('checking in');
+    let location = {
+      player_id: this.state.currentUser.id,
+      court_id: this.state.currentCourt.id,
+      is_active: true,
+    }
+
+    this.updatePlayerActivity(location)
+  }
+
+  checkout = () => {
+    console.log('checking out');
+    let location = {
+      player_id: this.state.currentUser.id,
+      court_id: this.state.currentCourt.id,
+      is_active: false,
+    }
+
+    this.updatePlayerActivity(location)
+  }
+
+
+  updatePlayerActivity = (data={
+    player_id: this.state.currentUser.id,
+    court_id: this.state.currentCourt.id
+  }) => {
+    fetch(`${API}/player_courts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).then(res => res.json()).then(location => {
+
+      this.setState({atCourt: location.is_active})
+    })
+    .then(() => {
+      fetch(`${API}/courts/${this.state.currentCourt.id}`).then(res => res.json())
+      .then(court => {
+
+        this.setState({currentCourt: court})
+    })})
+  }
+
+  //////////////// FAVORITING ///////////////
+
+  favorite = () => {
+    console.log('favoriting');
+    let location = {
+      player_id: this.state.currentUser.id,
+      court_id: this.state.currentCourt.id,
+      is_favorite: true,
+    }
+    this.updateFavorite(location)
+  }
+
+
+  unfavorite = () => {
+    console.log('unfavoriting');
+    let location = {
+      player_id: this.state.currentUser.id,
+      court_id: this.state.currentCourt.id,
+      is_favorite: false,
+    }
+
+    this.updateFavorite(location)
+  }
+
+
+  updateFavorite = data => {
+    fetch(`${API}/player_courts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).then(() => this.setState({favorited: !this.state.favorited}))
   }
 
   ////////////// PLAYER MANAGEMENT ////////////////
 
   loginUser = player => {
-    // e.preventDefault()
-    // e.persist()
-
-    // let player = {
-    //   username: e.target[0].value,
-    //   player: e.target[1].value
-    // }
-
-    // this.setState({
-    //   currentUser: this.state.players.find(p => {
-    //     return p.username === player.username
-    //   }, this.props.history.push(`${this.props.location.pathname}`))
-    // })
-    //
-    //
-    // e.target.reset()
-
     this.setState({currentUser: player})
     if(this.props.location.pathname === '/signup') {
       this.props.history.push('/')
@@ -167,16 +261,28 @@ class App extends Component {
           <Route exact path='/profile' render={() => this.state.loading ? null : this.showProfile()
           } />
 
-          <Route exact path='/courts/:id' render={() => {
+          {
+            this.state.currentCourt ? <Route exact path='/courts/:id' render={() => {
             return (
               <Fragment>
-                <CourtDetail current={this.state.currentUser} />
+                <CourtDetail current={this.state.currentUser} court={this.state.currentCourt} favorited={this.state.favorited}
+                favorite={this.favorite} unfavorite={this.unfavorite}
+                checkin={this.checkin} checkout={this.checkout}
+                updatePlayerActivity={this.updatePlayerActivity}
+                atCourt={this.state.atCourt}/>
               </Fragment>
             )
-          }} />
+            }} /> : null
+        }
         </Switch>
       </div>
     )
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    courts: state.courts
   }
 }
 
