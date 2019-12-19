@@ -58,7 +58,7 @@ class CourtDetail extends Component {
   render() {
     return(
         <Sidebar id='sidebar' animation='push' direction='left'
-          visible={true} vertical='true' >
+          visible={true} vertical='true' width='wide' >
           <button onClick={this.closeCourt}>x</button><br />
           <CourtInfo court={this.props.court} />
 

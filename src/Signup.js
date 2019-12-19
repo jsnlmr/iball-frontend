@@ -41,11 +41,11 @@ class Signup extends Component {
     return (
       <div>
         <Grid textAlign='center' style={{ height: '100%' }} verticalAlign='middle'>
-          <Grid.Column style={{ maxWidth: 450 }}>
-            <Header as='h2' color='teal' textAlign='center'>
-              <Image src='/logo.png' /> Signup for Your Account
+          <Grid.Column className='forms' style={{ maxWidth: 450 }}>
+            <Header className='form-header' as='h2' color='white' textAlign='center'>
+              Signup for Your Account
             </Header>
-            <Form size='large' onSubmit={this.handleSubmit}>
+            <Form size='massive' onSubmit={this.handleSubmit}>
               <Segment stacked>
                 <Form.Input fluid icon='user' iconPosition='left'
                   placeholder='Username' value={this.state.username}
@@ -54,7 +54,7 @@ class Signup extends Component {
                   placeholder='Password' type='password'
                   value={this.state.password} onChange={this.handleChange}
                   name='password' />
-                <Button color='teal' fluid size='large'
+                <Button color='green' fluid size='large'
                   type='submit'>
                   Register Account</Button>
               </Segment>

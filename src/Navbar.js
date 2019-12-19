@@ -59,11 +59,14 @@ class Navbar extends Component {
     let favs = this.renderFavorites()
     return (
       <div>
-        <Menu size='large'>
+        <Menu size='big' position='left'>
           <Container>
-            <Menu.Item as={Link}  to='/' header>iBall</Menu.Item>
+            <Menu.Item className='nav-item' as={Link}  to='/' header>
+              <img src='https://images.vexels.com/media/users/3/129332/isolated/lists/b3f0ad2e079ac9027c5eb0a2d1c8549b-basketball-silhouette-icon.png' />
+              iBall
+            </Menu.Item>
 
-            <Dropdown item text='Friends'>
+            <Dropdown className='nav-item' item text='Friends'>
               <Dropdown.Menu>
                 <Dropdown.Item text='Friend 1' description='Online' />
                 <Dropdown.Item text='Friend 2' description='Online' />
@@ -72,7 +75,7 @@ class Navbar extends Component {
               </Dropdown.Menu>
             </Dropdown>
 
-            <Dropdown item text='Favorites'>
+            <Dropdown className='nav-item' item text='Favorites'>
               <Dropdown.Menu>
                 {
                   favs.length !== 0 ? favs : <Dropdown.Item text='No Favorites' />
@@ -80,16 +83,16 @@ class Navbar extends Component {
               </Dropdown.Menu>
             </Dropdown>
 
-            <Menu.Item as={Link} to='/profile' name='profile' />
+            <Menu.Item className='nav-item' as={Link} to='/profile' name='profile' />
 
             <Menu.Menu position='right'>
               <Menu.Item>
-                <Input className='icon' icon='search'
+                <Input className='search' icon='search'
                   placeholder='Find a Basketball Court' />
               </Menu.Item>
 
-              <Menu.Item>
-                <Button primary onClick={this.props.logout}>LOGOUT</Button>
+              <Menu.Item position='right'>
+                <Button className='logout' color='yellow' onClick={this.props.logout}>LOGOUT</Button>
               </Menu.Item>
             </Menu.Menu>
           </Container>
@@ -100,28 +103,33 @@ class Navbar extends Component {
 
   loggedOutNav = () => {
     return (
-      <Menu size='large'>
-        <Container>
-          <Menu.Item as={Link} to='/' icon header>iBall</Menu.Item>
-
-          <Menu.Menu position='right'>
-            <Menu.Item>
-              <Form onSubmit={this.handleSubmit}>
-                <Form.Input name='username' className='icon' icon='user' iconPosition='left'
-                  placeholder='Username' onChange={this.handleChange} />
-                <Form.Input name='password' className='icon' icon='lock' iconPosition='left'
-                  placeholder='Password' type='password'
-                  onChange={this.handleChange} />
-                  <Menu.Item>
-                    <Button type='submit' primary>LOGIN</Button>
-                    <Link to='/signup'>Register as New User</Link>
-                  </Menu.Item>
-              </Form>
+      <div>
+        <Menu size='large'>
+          <Container>
+            <Menu.Item as={Link} to='/' icon header>
+            <img src='https://images.vexels.com/media/users/3/129332/isolated/lists/b3f0ad2e079ac9027c5eb0a2d1c8549b-basketball-silhouette-icon.png' />
+            iBall
             </Menu.Item>
 
-          </Menu.Menu>
-        </Container>
-      </Menu>
+            <Menu.Menu position='right'>
+              <Menu.Item>
+                <Form onSubmit={this.handleSubmit}>
+                  <Input name='username' className='icon' icon='user' iconPosition='left'
+                    placeholder='Username' onChange={this.handleChange} />
+                  <Input name='password' className='icon' icon='lock' iconPosition='left'
+                    placeholder='Password' type='password'
+                    onChange={this.handleChange} />
+                  <Button type='submit' color='green' primary>LOGIN</Button>
+                </Form>
+              </Menu.Item>
+              <Menu.Item>
+                <Link to='/signup'>Register as New User</Link>
+              </Menu.Item>
+
+            </Menu.Menu>
+          </Container>
+        </Menu>
+      </div>
     )
   }
 

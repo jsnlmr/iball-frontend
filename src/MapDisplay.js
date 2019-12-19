@@ -127,7 +127,7 @@ class MapDisplay extends Component {
 
             paint={
               {
-                'circle-color': 'orangered',
+                'circle-color': 'darkorange',
                 'circle-stroke-width': 1,
                 'circle-radius': 7
               }

@@ -33,6 +33,9 @@
 
 #sidebar {
   background-color: white;
+  margin-top: 63px !important;
+  padding-left: 10px;
+  padding-top: 20px;
 }
 
 #map {
@@ -45,19 +48,21 @@
 }
 
 #nav {
-  z-index: 1;
-  position: fixed;
   right: 0;
   left: 0;
+  text-align: left;
+  top: 0;
+  background-color: black;
 }
-
-
 
 #court-detail {
   height: 100%;
   z-index: 1;
 }
 
+#delete {
+  margin-top: 50px;
+}
 
 /* NAVBAR
 
@@ -86,3 +91,50 @@
   float: right;
 }
 */
+
+div.ui.left.icon.input.icon {
+  margin-right: 20px;
+}
+
+div.menu.transition.visible {
+  width: 450%;
+}
+
+.forms {
+  margin-top: 100px;
+}
+
+body {
+  background-image: url('../src/images/basketball-court-basketball-ring-court-1607855.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.form-header {
+  color: darkorange!important;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+}
+
+/* .ui.menu:not(.vertical) .item {
+    display: flex;
+    align-items: center;
+    right: 35%;
+  }
+
+
+  .ui.menu:not(.vertical) .item>.button {
+      position: relative;
+      top: 0;
+      right: -490%;
+      margin: -.5em 0;
+      padding-bottom: .78571429em;
+      padding-top: .78571429em;
+      font-size: 1em;
+    }
+
+    .ui.menu:not(.vertical) .item>.input {
+        position: relative;
+        top: 0;
+        margin: -.5em 0;
+        right: -236%;
+      } */

@@ -44,11 +44,11 @@ class PlayerProfile extends Component {
     return (
       <div>
         <Grid textAlign='center' style={{ height: '100%' }} verticalAlign='middle'>
-          <Grid.Column style={{ maxWidth: 450 }}>
-            <Header as='h2' color='teal' textAlign='center'>
-              <Image src='/logo.png' /> My Profile
+          <Grid.Column className='forms' style={{ maxWidth: 450 }}>
+            <Header as='h2' className='form-header' textAlign='center'>
+            My Profile
             </Header>
-            <Form size='large' onSubmit={this.handleSubmit}>
+            <Form size='massive' onSubmit={this.handleSubmit}>
               <Segment stacked>
                 <Form.Input fluid icon='user' iconPosition='left'
                   placeholder='Username' value={this.state.username}
@@ -58,12 +58,12 @@ class PlayerProfile extends Component {
                     placeholder='New Password' type='password'
                     value={this.state.newPassword} onChange={this.handleChange}
                     name='newPassword' />
-                <Button color='teal' fluid size='large' type='submit'>
+                <Button color='green' fluid size='large' type='submit'>
                   Update My Profile
                 </Button>
               </Segment>
             </Form>
-            <Button onClick={this.deleteFetch}>Delete My Account</Button>
+            <Button id='delete' size='big' color='red' onClick={this.deleteFetch}>Delete My Account</Button>
           </Grid.Column>
         </Grid>
       </div>

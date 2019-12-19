@@ -256,7 +256,7 @@ class App extends Component {
     if(this.props.match.url === '/courts') {
       this.fetchCourt(this.props.location.pathname.split('/')[2])
     }
-    
+
     fetch(`${API}/courts`).then(res => res.json()).then(courts => {
       this.setState({courts: courts})
     })
@@ -289,16 +289,18 @@ class App extends Component {
     return (
 
       <div id='app'>
-        <Fragment>
-          { this.state.loading ? null : this.renderNavbar() }
-        </Fragment>
-        <Fragment>
-          {
-            MAP_URLS.includes(this.props.location.pathname)
-              || this.props.location.pathname.split('/')[1] === 'courts'
-                ? this.renderMap() : null
-          }
-        </Fragment>
+        <Sidebar.Pushable>
+          <Fragment>
+            { this.state.loading ? null : this.renderNavbar() }
+          </Fragment>
+          <Sidebar.Pusher>
+              {
+                MAP_URLS.includes(this.props.location.pathname)
+                  || this.props.location.pathname.split('/')[1] === 'courts'
+                    ? this.renderMap() : null
+              }
+          </Sidebar.Pusher>
+        </Sidebar.Pushable>
 
         <Switch>
           <Route exact path='/signup' render={() =>
